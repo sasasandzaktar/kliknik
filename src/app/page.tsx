@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Celebration from "@/components/Celebration";
+import nikola from "@/assets/nikola.jpg";
 import ReplayButton from "@/components/ReplayButton";
 import { Arrow } from "@/components/icons";
 
@@ -115,10 +117,19 @@ export default function Home() {
                 </div>
               </dl>
             </div>
-            {/* Placeholder dok ne stigne fotografija. */}
-            <div className="flex aspect-[4/5] max-h-[560px] w-full items-center justify-center border border-neutral-300 bg-[repeating-linear-gradient(135deg,#f4f4f4_0,#f4f4f4_12px,#ffffff_12px,#ffffff_24px)]">
-              <span className={`${label} bg-white px-3 py-2 text-neutral-500`}>Fotografija uskoro</span>
-            </div>
+            {/* Crno-bijela kao ostatak stranice; boja se vrati kad se pređe mišem. */}
+            <figure className="flex flex-col gap-3">
+              <Image
+                src={nikola}
+                alt="Nikola Iličić, osnivač Kliknika"
+                placeholder="blur"
+                sizes="(min-width: 1280px) 600px, (min-width: 700px) 50vw, 100vw"
+                className="aspect-[4/5] max-h-[640px] w-full object-cover object-[50%_35%] grayscale transition-[filter] duration-500 hover:grayscale-0"
+              />
+              <figcaption className="font-mono text-xs uppercase tracking-[0.08em] text-neutral-500">
+                Nikola Iličić — osnivač
+              </figcaption>
+            </figure>
           </div>
         </section>
 
