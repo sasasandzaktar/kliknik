@@ -1,4 +1,4 @@
-name: Build i objavi image
+name: Build i deploy
 
 # Build namjerno ide ovdje, a ne na VPS-u: Next.js build zna tražiti
 # 2+ GB RAM-a, a na serveru se vrti n8n koji ne smije pasti.
@@ -34,3 +34,29 @@ jobs:
             ghcr.io/${{ github.repository }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    # Ne dozvoli da se dva deploya preklope ako se pushne brzo zaredom.
+    concurrency: deploy-vps
+
+    steps:
+      # Ključ na serveru je ograničen (command= u authorized_keys): bez
+      # obzira šta pošaljemo, server izvrši samo pull + up -d za Kliknik.
+      - name: Povuci novi image na VPS-u
+        run: |
+          install -m 700 -d ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          echo "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}
+
+      - name: Provjeri da stranica odgovara
+        run: |
+          for i in 1 2 3 4 5 6; do
+            curl -fsS -o /dev/null https://kliknik.31.97.183.143.sslip.io && exit 0
+            sleep 5
+          done
+          exit 1

@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-2">
       <h1 className="text-4xl font-semibold">Kliknik</h1>
-      <p className="text-zinc-500">Uskoro.</p>
+      <p className="text-zinc-500">Stranica u izradi.</p>
     </main>
   );
 }
